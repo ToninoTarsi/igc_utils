@@ -7,3 +7,8 @@
 
 #Igc-Files#
 *.igc
+
+# Folders #
+build
+dist
+igc_utils
