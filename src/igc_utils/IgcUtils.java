@@ -1,0 +1,34 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package igc_utils;
+
+import igc_utils.exceptions.NoIgcFileException;
+import igc_utils.helperWindows.StdFlightWindow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author jfrese
+ */
+public class IgcUtils {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        IgcFile iFile;
+        try {
+            iFile = new IgcFile("341dsq71.igc");
+            Flight flight = iFile.getFligth();
+            StdFlightWindow sfw = new StdFlightWindow(800,600);
+            sfw.drawFlight(flight);
+        } catch (NoIgcFileException ex) {
+            Logger.getLogger(IgcUtils.class.getName()).log(Level.SEVERE, "No valid Igc-File. " + ex.getPathName() + " must contain '.igc'.", ex);
+        }
+    }
+
+}
