@@ -12,18 +12,24 @@ package igc_utils;
 public class ThermalPattern {
 
     public static final ThermalPattern STANDARD = new ThermalPattern(8, false);
-    
+
     public static final ThermalPattern LIFTONLY = new ThermalPattern(8, true);
-    
+
     private int anzLogs;
-    
-    private int maxThermalSpeed=60;
-    
+
+    private int thermalRadius = 500;
+
     private boolean liftOnly;
-    
+
     public ThermalPattern(int anzLogs, boolean liftOnly) {
         this.anzLogs = anzLogs;
         this.liftOnly = liftOnly;
+    }
+
+    public ThermalPattern(int anzLogs, boolean liftOnly, int thermalRadius) {
+        this.anzLogs = anzLogs;
+        this.liftOnly = liftOnly;
+        this.thermalRadius = thermalRadius;
     }
 
     public int getAnzLogs() {
@@ -34,12 +40,7 @@ public class ThermalPattern {
         return liftOnly;
     }
 
-    public int getMaxThermalSpeed() {
-        return maxThermalSpeed;
+    public int getThermalRadius() {
+        return thermalRadius;
     }
-
-    public void setMaxThermalSpeed(int maxThermalSpeed) {
-        this.maxThermalSpeed = maxThermalSpeed;
-    }
-    
 }

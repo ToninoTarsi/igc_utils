@@ -65,7 +65,7 @@ public class Flight {
             } else {
                 if (counter != 0) {
                     counter2++;
-                    if (counter2 == tp.getAnzLogs() &&(tp.isLiftOnly() ||(flightPositions.get(flightPositions.indexOf(ifp)).getPoint().calcDistance(flightPositions.get(flightPositions.indexOf(ifp)-8).getPoint()))*1000 >= 500)) {
+                    if (counter2 == tp.getAnzLogs() &&(tp.isLiftOnly() ||(flightPositions.get(flightPositions.indexOf(ifp)).getPoint().calcDistance(flightPositions.get(flightPositions.indexOf(ifp)-8).getPoint()))*1000 >= tp.getThermalRadius())) {
                         counter = 0;
                         counter2 = 0;
                         if (temp.size() > 0) {
@@ -82,7 +82,7 @@ public class Flight {
                 }
             }
 
-            if (counter == tp.getAnzLogs() && (tp.isLiftOnly() || (flightPositions.get(flightPositions.indexOf(ifp)).getPoint().calcDistance(flightPositions.get(flightPositions.indexOf(ifp)-8).getPoint()))*1000 <= 500)) {
+            if (counter == tp.getAnzLogs() && (tp.isLiftOnly() || (flightPositions.get(flightPositions.indexOf(ifp)).getPoint().calcDistance(flightPositions.get(flightPositions.indexOf(ifp)-8).getPoint()))*1000 <= tp.getThermalRadius())) {
                 if (temp.isEmpty()) {
                     InFlightPosition morePrev = ifp.getPrev();
                     for (int a = 0; a < tp.getAnzLogs() && morePrev != null; a++, morePrev = morePrev.getPrev()) {
