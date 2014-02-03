@@ -5,10 +5,10 @@
 *.war
 *.ear
 
-#Igc-Files#
-*.igc
-
 # Folders #
 build
 dist
 igc_utils
+
+# misc #
+private*
