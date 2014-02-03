@@ -11,4 +11,5 @@ dist
 igc_utils
 
 # misc #
-private*
+private.properties
+private.xml
