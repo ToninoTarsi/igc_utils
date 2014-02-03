@@ -26,8 +26,7 @@ public class IgcUtils {
             iFile = new IgcFile("341dsq71.igc");
             Flight flight = iFile.getFligth();
             StdFlightWindow sfw = new StdFlightWindow(800,600);
-            sfw.drawFlight(flight);        
-            
+            sfw.drawFlight(flight,ThermalPattern.LIFTONLY);
         } catch (NoIgcFileException ex) {
             Logger.getLogger(IgcUtils.class.getName()).log(Level.SEVERE, "No valid Igc-File. " + ex.getPathName() + " must contain '.igc'.", ex);
         }

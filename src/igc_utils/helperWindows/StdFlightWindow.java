@@ -25,23 +25,26 @@ public class StdFlightWindow extends JFrame {
     Canvas c;
     Flight flight;
     double scale = 0.0;
+    Graphics g;
+    ThermalPattern tp;
 
     public StdFlightWindow(int x, int y) {
         setSize(x, y);
         setTitle("StdFlightWindow");
         c = new Canvas();
         c.setSize(x, y);
-        c.setEnabled(true);
-        //add(c);
+        this.add(c);
         setResizable(true);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void drawFlight(Flight f) {
-
+    public void drawFlight(Flight f,ThermalPattern tp) {
+        
+        this.tp = tp;
+                
         flight = f;
-        flight.getThermals();
+        flight.getThermals(tp);
         
         /**
          * Workaround. Must be fixed later
@@ -87,9 +90,9 @@ public class StdFlightWindow extends JFrame {
         } else {
             scale = scaleY;
         }
-
-        Graphics g = getGraphics();
-
+        
+        g = c.getGraphics();
+        
         int offset = 25;
         int timeFactor = 4001;
         for (InFlightPosition ifp : flight.getFlightPositions()) {
