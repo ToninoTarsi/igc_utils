@@ -15,8 +15,9 @@ public class ThermalPattern {
     
     public static final ThermalPattern LIFTONLY = new ThermalPattern(8, true);
     
-    
     private int anzLogs;
+    
+    private int maxThermalSpeed=60;
     
     private boolean liftOnly;
     
@@ -31,6 +32,14 @@ public class ThermalPattern {
 
     public boolean isLiftOnly() {
         return liftOnly;
+    }
+
+    public int getMaxThermalSpeed() {
+        return maxThermalSpeed;
+    }
+
+    public void setMaxThermalSpeed(int maxThermalSpeed) {
+        this.maxThermalSpeed = maxThermalSpeed;
     }
     
 }

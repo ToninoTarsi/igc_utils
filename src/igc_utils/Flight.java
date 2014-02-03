@@ -55,7 +55,7 @@ public class Flight {
         int counter = 0, counter2 = 0;
         for (InFlightPosition ifp : flightPositions) {
 
-            if ((ifp.getLiftIntGps() > 0 || ifp.getLiftIntQnh() > 0)) {
+            if ((ifp.getLiftIntGps() > 0 || ifp.getLiftIntQnh() > 0) && ifp.getPrev() != null) {
                 if (counter < tp.getAnzLogs()) {
                     counter++;
                 }
@@ -65,14 +65,14 @@ public class Flight {
             } else {
                 if (counter != 0) {
                     counter2++;
-                    if (counter2 == tp.getAnzLogs()) {
+                    if (counter2 == tp.getAnzLogs() &&(tp.isLiftOnly() ||(flightPositions.get(flightPositions.indexOf(ifp)).getPoint().calcDistance(flightPositions.get(flightPositions.indexOf(ifp)-8).getPoint()))*1000 >= 500)) {
                         counter = 0;
                         counter2 = 0;
                         if (temp.size() > 0) {
-                            for(int a = 0; a < tp.getAnzLogs() ; a++){
+                            for (int a = 0; a < tp.getAnzLogs(); a++) {
                                 temp.remove(temp.size() - 1);
                             }
-                            for(InFlightPosition tempPos:temp){
+                            for (InFlightPosition tempPos : temp) {
                                 tempPos.setThermaling(true);
                             }
                             thermals.add(new Thermal(temp));
@@ -82,13 +82,13 @@ public class Flight {
                 }
             }
 
-            if (counter == tp.getAnzLogs()) {
-               if(temp.isEmpty()){
-                   InFlightPosition morePrev = ifp.getPrev();
-                   for(int a = 0 ; a < tp.getAnzLogs() && morePrev != null; a++,morePrev=morePrev.getPrev()){
-                       temp.add(0,morePrev);
-                   }
-               }
+            if (counter == tp.getAnzLogs() && (tp.isLiftOnly() || (flightPositions.get(flightPositions.indexOf(ifp)).getPoint().calcDistance(flightPositions.get(flightPositions.indexOf(ifp)-8).getPoint()))*1000 <= 500)) {
+                if (temp.isEmpty()) {
+                    InFlightPosition morePrev = ifp.getPrev();
+                    for (int a = 0; a < tp.getAnzLogs() && morePrev != null; a++, morePrev = morePrev.getPrev()) {
+                        temp.add(0, morePrev);
+                    }
+                }
                 temp.add(ifp);
             }
 

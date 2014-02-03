@@ -8,6 +8,7 @@ package igc_utils.helperWindows;
 import igc_utils.Flight;
 import igc_utils.InFlightPosition;
 import igc_utils.Point;
+import igc_utils.ThermalPattern;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -101,6 +102,7 @@ public class StdFlightWindow extends JFrame {
             if (prev != null) {
                 Point p = ifp.getPoint(), pOld = prev.getPoint();
                 g.drawLine((int) ((p.getLon() - extrema[1]) / (scale / (getWidth() - offset))) + 15, getHeight() - (int) ((p.getLat() - extrema[3]) / (scale / (getHeight() - offset))) - 40, (int) ((pOld.getLon() - extrema[1]) / (scale / (getWidth() - offset))) + 15, getHeight() - (int) ((pOld.getLat() - extrema[3]) / (scale / (getHeight() - offset))) - 40);
+                //g.fillRect((int) ((p.getLon() - extrema[1]) / (scale / (getWidth() - offset))) + 15, getHeight() - (int) ((p.getLat() - extrema[3]) / (scale / (getHeight() - offset))) - 40,1,1);
                 try {
                     Thread.sleep(4000/(timeFactor));
                 } catch (InterruptedException ex) {
