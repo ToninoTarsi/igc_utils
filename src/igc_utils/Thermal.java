@@ -14,27 +14,67 @@ import java.util.List;
  */
 public class Thermal {
 
-    List<InFlightPosition> positions = new ArrayList<>();
-    List<Point> centers = new ArrayList<>();
-    double maxLift = 0.0, minLift = 0.0, averageLift = 0.0, maxLiftInt = 0.0, minLiftInt = 0.0, averageLiftInt = 0.0;
-    
-    
-    public Thermal(){
-        
+    private List<InFlightPosition> positions = new ArrayList<>();
+    private List<Point> centers = new ArrayList<>();
+    private double[] minLift, maxLift, averageLift, minLiftInt, maxLiftInt, averageLiftInt;
+
+    public Thermal() {
+
     }
-    
-    public Thermal(List<InFlightPosition> pos){
+
+    public Thermal(List<InFlightPosition> pos) {
         positions = pos;
+        minLift = new double[2];
+        maxLift = new double[2];
+        averageLift = new double[2];
+        minLiftInt = new double[2];
+        maxLiftInt = new double[2];
+        averageLiftInt = new double[2];
         initThermal();
     }
-    
-    public void initThermal(){
-        
+
+    public void initThermal() {
+        if (positions.get(0) != null) {
+            InFlightPosition p0 = positions.get(0);
+            minLift[0] = p0.getLiftQnh();
+            minLift[1] = p0.getLiftGps();
+            maxLift[0] = p0.getLiftQnh();
+            maxLift[1] = p0.getLiftGps();
+            minLiftInt[0] = p0.getLiftIntQnh();
+            minLiftInt[1] = p0.getLiftIntGps();
+            maxLiftInt[0] = p0.getLiftIntQnh();
+            maxLiftInt[1] = p0.getLiftIntGps();
+        }
+        for (InFlightPosition ifp : positions) {
+            if (minLift[0] > ifp.getLiftQnh()) {
+                minLift[0] = ifp.getLiftQnh();
+            }
+            if (minLift[1] > ifp.getLiftGps()) {
+                minLift[1] = ifp.getLiftGps();
+            }
+            if (maxLift[0] < ifp.getLiftQnh()) {
+                maxLift[0] = ifp.getLiftQnh();
+            }
+            if (maxLift[1] < ifp.getLiftGps()) {
+                maxLift[1] = ifp.getLiftGps();
+            }
+            if (minLiftInt[0] > ifp.getLiftIntQnh()) {
+                minLiftInt[0] = ifp.getLiftIntQnh();
+            }
+            if (minLiftInt[1] > ifp.getLiftIntGps()) {
+                minLiftInt[1] = ifp.getLiftIntGps();
+            }
+            if (maxLiftInt[0] < ifp.getLiftIntQnh()) {
+                maxLiftInt[0] = ifp.getLiftIntQnh();
+            }
+            if (maxLiftInt[1] < ifp.getLiftIntGps()) {
+                maxLiftInt[1] = ifp.getLiftIntGps();
+            }
+        }
     }
-    
-    
-    public String toString(){
-        return ""+positions;
+
+    public String toString() {
+        return "----------\nSteigen nach QNH:\nMinimal: "+minLift[0]+"\nMaximal: "+maxLift[0]+"\nSteigen nach GPS\nMinimal: "+minLift[1]+"\nMaximal: "+maxLift[1];
     }
-    
+
 }

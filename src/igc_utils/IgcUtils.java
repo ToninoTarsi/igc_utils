@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * This class exists ONLY for testing during the developement process.
- * 
+ *
  * @author jfrese
  */
 public class IgcUtils {
@@ -25,8 +25,11 @@ public class IgcUtils {
         try {
             iFile = new IgcFile("341dsq71.igc");
             Flight flight = iFile.getFligth();
-            StdFlightWindow sfw = new StdFlightWindow(1680,1050);
-            sfw.drawFlight(flight,ThermalPattern.STANDARD);
+            StdFlightWindow sfw = new StdFlightWindow(1680, 1050);
+            sfw.drawFlight(flight, ThermalPattern.STANDARD);
+            for (int a = 0; a < flight.getThermals().size(); a++) {
+                System.out.println(flight.getThermals().get(a));
+            }
         } catch (NoIgcFileException ex) {
             Logger.getLogger(IgcUtils.class.getName()).log(Level.SEVERE, "No valid Igc-File. " + ex.getPathName() + " must contain '.igc'.", ex);
         }
