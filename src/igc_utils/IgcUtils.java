@@ -25,7 +25,7 @@ public class IgcUtils {
         try {
             iFile = new IgcFile("341dsq71.igc");
             Flight flight = iFile.getFligth();
-            StdFlightWindow sfw = new StdFlightWindow(1680, 1050);
+            StdFlightWindow sfw = new StdFlightWindow(800,600);
             sfw.drawFlight(flight, ThermalPattern.STANDARD);
             for (int a = 0; a < flight.getThermals().size(); a++) {
                 System.out.println(flight.getThermals().get(a));

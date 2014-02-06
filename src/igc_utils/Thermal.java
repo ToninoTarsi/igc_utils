@@ -70,11 +70,19 @@ public class Thermal {
             if (maxLiftInt[1] < ifp.getLiftIntGps()) {
                 maxLiftInt[1] = ifp.getLiftIntGps();
             }
+            averageLift[0] += ifp.getLiftQnh();
+            averageLift[1] += ifp.getLiftGps();
+            averageLiftInt[0] += ifp.getLiftIntQnh();
+            averageLiftInt[1] += ifp.getLiftIntGps();
         }
+        averageLift[0] /= positions.size();
+        averageLift[1] /= positions.size();
+        averageLiftInt[0] /= positions.size();
+        averageLiftInt[1] /= positions.size();
     }
 
     public String toString() {
-        return "----------\nSteigen nach QNH:\nMinimal: "+minLift[0]+"\nMaximal: "+maxLift[0]+"\nSteigen nach GPS\nMinimal: "+minLift[1]+"\nMaximal: "+maxLift[1];
+        return "----------\nSteigen nach QNH:\nMinimal: "+minLift[0]+"\nMaximal: "+maxLift[0]+"\nDurchscnittlich:\nNormal: "+averageLift[0]+"\nIntegriert: "+averageLiftInt[0]+"\nSteigen nach GPS\nMinimal: "+minLift[1]+"\nMaximal: "+maxLift[1]+"\nDurchscnittlich:\nNormal: "+averageLift[1]+"\nIntegriert: "+averageLiftInt[1];
     }
 
 }
