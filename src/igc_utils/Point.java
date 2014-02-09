@@ -84,6 +84,27 @@ public class Point {
         return distance;
     }
 
+    public final ThermalCenterPoint calcCenter(Point p1, Point p2, Point p3) {
+        ThermalCenterPoint center;
+        double x1 = p1.getLon(), x2 = p2.getLon(), x3 = p3.getLon();
+        double y1 = p1.getLat(), y2 = p2.getLat(), y3 = p3.getLat();
+
+        double ym = (((Math.pow(x3, 2) - Math.pow(x1, 2) + Math.pow(y3, 2) - Math
+                .pow(y1, 2)) * (x2 - x1) - ((Math.pow(x2, 2) - Math.pow(x1, 2)
+                + Math.pow(y2, 2) - Math.pow(y1, 2)) * (x3 - x1)))
+                / (2 * (((y3 - y1) * (x2 - x1)) - ((y2 - y1) * (x3 - x1)))));
+
+        double xm = (((Math.pow(x2, 2) - Math.pow(x1, 2))
+                + (Math.pow(y2, 2) - Math.pow(y1, 2)) - ((2 * ym) * (y2 - y1))) / (2 * (x2 - x1)));
+
+        center = new ThermalCenterPoint(ym, xm);
+        
+        double r = calcDistance(center, p1);
+        center.setRadius(r);
+        
+        return center;
+    }
+
     public static double toDecimal(String coord) {
         double decimal = 0;
         int index = 0;
