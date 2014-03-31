@@ -17,7 +17,7 @@ public class ThermalPattern {
 
     private int anzLogs;
 
-    private int thermalRadius = 500;
+    private int thermalRadius = 650;
 
     private boolean liftOnly;
 

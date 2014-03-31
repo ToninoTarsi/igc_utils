@@ -84,7 +84,7 @@ public class Point {
         return distance;
     }
 
-    public final ThermalCenterPoint calcCenter(Point p1, Point p2, Point p3) {
+    public static ThermalCenterPoint calcCenter(Point p1, Point p2, Point p3) {
         ThermalCenterPoint center;
         double x1 = p1.getLon(), x2 = p2.getLon(), x3 = p3.getLon();
         double y1 = p1.getLat(), y2 = p2.getLat(), y3 = p3.getLat();

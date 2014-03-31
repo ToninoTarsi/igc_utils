@@ -74,6 +74,12 @@ public class Thermal {
             averageLift[1] += ifp.getLiftGps();
             averageLiftInt[0] += ifp.getLiftIntQnh();
             averageLiftInt[1] += ifp.getLiftIntGps();
+
+            if (positions.indexOf(ifp) > 2) {
+
+                centers.add(Point.calcCenter(ifp.getPoint(), ifp.getPrev().getPoint(), ifp.getPrev().getPrev().getPoint()));
+            }
+
         }
         averageLift[0] /= positions.size();
         averageLift[1] /= positions.size();
@@ -81,8 +87,60 @@ public class Thermal {
         averageLiftInt[1] /= positions.size();
     }
 
+    public List<ThermalCenterPoint> getCentersByEvaluation(int numberOfPoints) {
+        List<ThermalCenterPoint> centers = new ArrayList<>();
+
+        double x = 0.0, y = 0.0;
+
+        for (InFlightPosition ifp : positions) {
+            x += ifp.getPoint().getLon();
+            y += ifp.getPoint().getLat();
+            System.out.println(ifp.getPoint());
+            if (positions.indexOf(ifp) % numberOfPoints == 0 && positions.indexOf(ifp) > 0) {
+                x /= numberOfPoints;
+                y /= numberOfPoints;
+                System.out.println(x+"|"+y);
+                centers.add(new ThermalCenterPoint(y, x));
+            }
+        }
+
+        return centers;
+    }
+
+    public List<InFlightPosition> getPositions() {
+        return positions;
+    }
+
+    public List<Point> getCenters() {
+        return centers;
+    }
+
+    public double[] getMinLift() {
+        return minLift;
+    }
+
+    public double[] getMaxLift() {
+        return maxLift;
+    }
+
+    public double[] getAverageLift() {
+        return averageLift;
+    }
+
+    public double[] getMinLiftInt() {
+        return minLiftInt;
+    }
+
+    public double[] getMaxLiftInt() {
+        return maxLiftInt;
+    }
+
+    public double[] getAverageLiftInt() {
+        return averageLiftInt;
+    }
+
     public String toString() {
-        return "----------\nSteigen nach QNH:\nMinimal: "+minLift[0]+"\nMaximal: "+maxLift[0]+"\nDurchscnittlich:\nNormal: "+averageLift[0]+"\nIntegriert: "+averageLiftInt[0]+"\nSteigen nach GPS\nMinimal: "+minLift[1]+"\nMaximal: "+maxLift[1]+"\nDurchscnittlich:\nNormal: "+averageLift[1]+"\nIntegriert: "+averageLiftInt[1];
+        return "----------\nSteigen nach QNH:\nMinimal: " + minLift[0] + "\nMaximal: " + maxLift[0] + "\nDurchscnittlich:\nNormal: " + averageLift[0] + "\nIntegriert: " + averageLiftInt[0] + "\nSteigen nach GPS\nMinimal: " + minLift[1] + "\nMaximal: " + maxLift[1] + "\nDurchscnittlich:\nNormal: " + averageLift[1] + "\nIntegriert: " + averageLiftInt[1];
     }
 
 }

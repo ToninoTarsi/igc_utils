@@ -70,6 +70,7 @@ public class Flight {
                         counter2 = 0;
                         if (temp.size() > 0) {
                             for (int a = 0; a < tp.getAnzLogs(); a++) {
+                                temp.get(temp.size()-1).setThermaling(false);
                                 temp.remove(temp.size() - 1);
                             }
                             for (InFlightPosition tempPos : temp) {
@@ -87,6 +88,7 @@ public class Flight {
                     InFlightPosition morePrev = ifp.getPrev();
                     for (int a = 0; a < tp.getAnzLogs() && morePrev != null; a++, morePrev = morePrev.getPrev()) {
                         temp.add(0, morePrev);
+                        morePrev.setThermaling(true);
                     }
                 }
                 temp.add(ifp);

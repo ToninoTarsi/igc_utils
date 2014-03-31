@@ -8,10 +8,13 @@ package igc_utils.helperWindows;
 import igc_utils.Flight;
 import igc_utils.InFlightPosition;
 import igc_utils.Point;
+import igc_utils.Thermal;
+import igc_utils.ThermalCenterPoint;
 import igc_utils.ThermalPattern;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -29,7 +32,7 @@ public class StdFlightWindow extends JFrame {
     ThermalPattern tp;
 
     public StdFlightWindow(int x, int y) {
-        setSize(x, y);
+        setSize(x + 50, y + 50);
         setTitle("StdFlightWindow");
         c = new Canvas();
         c.setSize(x, y);
@@ -39,13 +42,13 @@ public class StdFlightWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void drawFlight(Flight f,ThermalPattern tp) {
-        
+    public void drawFlight(Flight f, ThermalPattern tp) {
+
         this.tp = tp;
-                
+
         flight = f;
         flight.getThermals(tp);
-        
+
         /**
          * Workaround. Must be fixed later
          */
@@ -90,26 +93,38 @@ public class StdFlightWindow extends JFrame {
         } else {
             scale = scaleY;
         }
-        
+
         g = c.getGraphics();
-        
+
         int offset = 25;
         int timeFactor = 4001;
         for (InFlightPosition ifp : flight.getFlightPositions()) {
-            if(ifp.isThermaling()){
+            if (ifp.isThermaling()) {
                 g.setColor(Color.RED);
-            }else{
+            } else {
                 g.setColor(Color.BLACK);
             }
             InFlightPosition prev = ifp.getPrev();
             if (prev != null) {
                 Point p = ifp.getPoint(), pOld = prev.getPoint();
-                g.drawLine((int) ((p.getLon() - extrema[1]) / (scale / (getWidth() - offset))) + 15, getHeight() - (int) ((p.getLat() - extrema[3]) / (scale / (getHeight() - offset))) - 40, (int) ((pOld.getLon() - extrema[1]) / (scale / (getWidth() - offset))) + 15, getHeight() - (int) ((pOld.getLat() - extrema[3]) / (scale / (getHeight() - offset))) - 40);
+                g.drawLine((int) ((p.getLon() - extrema[1]) / (scale / (c.getWidth() - offset))) + 15, getHeight() - (int) ((p.getLat() - extrema[3]) / (scale / (c.getHeight() - offset))) - 50, (int) ((pOld.getLon() - extrema[1]) / (scale / (c.getWidth() - offset))) + 15, getHeight() - (int) ((pOld.getLat() - extrema[3]) / (scale / (c.getHeight() - offset))) - 50);
                 //g.fillRect((int) ((p.getLon() - extrema[1]) / (scale / (getWidth() - offset))) + 15, getHeight() - (int) ((p.getLat() - extrema[3]) / (scale / (getHeight() - offset))) - 40,1,1);
                 try {
-                    Thread.sleep(4000/(timeFactor));
+                    Thread.sleep(4000 / (timeFactor));
                 } catch (InterruptedException ex) {
                     Logger.getLogger(StdFlightWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        g.setColor(Color.YELLOW);
+        for (Thermal t : flight.getThermals(tp)){
+            List<ThermalCenterPoint> centers = t.getCentersByEvaluation(6);
+            for (Point p : centers) {
+                if (t.getCenters().indexOf(p) - 1 > 0) {
+                    Point pOld = centers.get(centers.indexOf(p) - 1);
+                    g.drawLine((int) ((p.getLon() - extrema[1]) / (scale / (c.getWidth() - offset))) + 15, getHeight() - (int) ((p.getLat() - extrema[3]) / (scale / (c.getHeight() - offset))) - 50, (int) ((pOld.getLon() - extrema[1]) / (scale / (c.getWidth() - offset))) + 15, getHeight() - (int) ((pOld.getLat() - extrema[3]) / (scale / (c.getHeight() - offset))) - 50);
+
                 }
             }
         }
