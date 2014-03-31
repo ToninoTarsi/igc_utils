@@ -11,161 +11,172 @@ package igc_utils;
  */
 public class Point {
 
-    double lat, lon;
-    String latDeg, lonDeg;
+	double lat, lon;
+	String latDeg, lonDeg;
+	private static final double toRadians = Math.PI/180;
 
-    public enum GpsAxis {
+	public enum GpsAxis {
 
-        LAT, LON;
-    }
+		LAT, LON;
+	}
 
-    public Point() {
-        lat = 0;
-        lon = 0;
-        latDeg = "";
-        lonDeg = "";
-    }
+	public Point() {
+		lat = 0;
+		lon = 0;
+		latDeg = "";
+		lonDeg = "";
+	}
 
-    public Point(double la, double lo) {
-        lat = la;
-        lon = lo;
-        latDeg = toPartGPSCoord(lat, GpsAxis.LAT);
-        lonDeg = toPartGPSCoord(lon, GpsAxis.LON);
-    }
+	public Point(double la, double lo) {
+		lat = la;
+		lon = lo;
+		latDeg = toPartGPSCoord(lat, GpsAxis.LAT);
+		lonDeg = toPartGPSCoord(lon, GpsAxis.LON);
+	}
 
-    public Point(String la, String lo) {
-        latDeg = la;
-        lonDeg = lo;
-        lat = toDecimal(la);
-        lon = toDecimal(lo);
-    }
+	public Point(String la, String lo) {
+		latDeg = la;
+		lonDeg = lo;
+		lat = toDecimal(la);
+		lon = toDecimal(lo);
+	}
 
-    public double getLat() {
-        return lat;
-    }
+	public double getLat() {
+		return lat;
+	}
 
-    public double getLon() {
-        return lon;
-    }
+	public double getLon() {
+		return lon;
+	}
 
-    public String getLatDeg() {
-        return latDeg;
-    }
+	public String getLatDeg() {
+		return latDeg;
+	}
 
-    public String getLonDeg() {
-        return lonDeg;
-    }
+	public String getLonDeg() {
+		return lonDeg;
+	}
 
-    public double calcDistance(Point p) {
-        double distance;
+	public double calcHeading(Point p) {
+		return Point.calcHeading(this, p);
+	}
 
-        double latTemp = Math.toRadians((lat + p.getLat()) / 2);
+	public static double calcHeading(Point p1, Point p2) {
+		double heading = 0;
+		
+		double sinPart = Math.sin(p1.getLat()*toRadians)*Math.sin(p2.getLat()*toRadians);
+		double e = Math.cos((p2.getLon()-p1.getLon())*toRadians);
+		double cosPart = Math.cos(p1.getLat()*toRadians)*Math.cos(p2.getLat()*toRadians)*e;
+		
+		System.out.println(sinPart+"|"+cosPart+"|"+e);
+		
+		heading = Math.acos(sinPart+cosPart);
 
-        double dx = 111.3 * Math.cos(latTemp) * (lon - p.getLon());
-        double dy = 111.3 * (lat - p.getLat());
+		return heading/toRadians;
+	}
 
-        distance = Math.sqrt(dx * dx + dy * dy);
-        distance = Math.round(distance * 1000.0) / 1000.0;
+	public double calcDistance(Point p) {
+		return Point.calcDistance(this, p);
+	}
 
-        return distance;
-    }
+	public static double calcDistance(Point p1, Point p2) {
+		double distance;
 
-    public static double calcDistance(Point p1, Point p2) {
-        double distance;
+		double lat = Math.toRadians((p1.getLat() + p2.getLat()) / 2);
 
-        double lat = Math.toRadians((p1.getLat() + p2.getLat()) / 2);
+		double dx = 111.3 * Math.cos(lat) * (p1.getLon() - p2.getLon());
+		double dy = 111.3 * (p1.getLat() - p2.getLat());
 
-        double dx = 111.3 * Math.cos(lat) * (p1.getLon() - p2.getLon());
-        double dy = 111.3 * (p1.getLat() - p2.getLat());
+		distance = Math.sqrt(dx * dx + dy * dy);
+		distance = Math.round(distance * 1000.0) / 1000.0;
 
-        distance = Math.sqrt(dx * dx + dy * dy);
-        distance = Math.round(distance * 1000.0) / 1000.0;
+		return distance;
+	}
 
-        return distance;
-    }
+	public static ThermalCenterPoint calcCenter(Point p1, Point p2, Point p3) {
+		ThermalCenterPoint center;
+		double x1 = p1.getLon(), x2 = p2.getLon(), x3 = p3.getLon();
+		double y1 = p1.getLat(), y2 = p2.getLat(), y3 = p3.getLat();
 
-    public static ThermalCenterPoint calcCenter(Point p1, Point p2, Point p3) {
-        ThermalCenterPoint center;
-        double x1 = p1.getLon(), x2 = p2.getLon(), x3 = p3.getLon();
-        double y1 = p1.getLat(), y2 = p2.getLat(), y3 = p3.getLat();
+		double ym = (((Math.pow(x3, 2) - Math.pow(x1, 2) + Math.pow(y3, 2) - Math
+			.pow(y1, 2)) * (x2 - x1) - ((Math.pow(x2, 2) - Math.pow(x1, 2)
+			+ Math.pow(y2, 2) - Math.pow(y1, 2)) * (x3 - x1)))
+			/ (2 * (((y3 - y1) * (x2 - x1)) - ((y2 - y1) * (x3 - x1)))));
 
-        double ym = (((Math.pow(x3, 2) - Math.pow(x1, 2) + Math.pow(y3, 2) - Math
-                .pow(y1, 2)) * (x2 - x1) - ((Math.pow(x2, 2) - Math.pow(x1, 2)
-                + Math.pow(y2, 2) - Math.pow(y1, 2)) * (x3 - x1)))
-                / (2 * (((y3 - y1) * (x2 - x1)) - ((y2 - y1) * (x3 - x1)))));
+		double xm = (((Math.pow(x2, 2) - Math.pow(x1, 2))
+			+ (Math.pow(y2, 2) - Math.pow(y1, 2)) - ((2 * ym) * (y2 - y1))) / (2 * (x2 - x1)));
 
-        double xm = (((Math.pow(x2, 2) - Math.pow(x1, 2))
-                + (Math.pow(y2, 2) - Math.pow(y1, 2)) - ((2 * ym) * (y2 - y1))) / (2 * (x2 - x1)));
+		center = new ThermalCenterPoint(ym, xm);
 
-        center = new ThermalCenterPoint(ym, xm);
-        
-        double r = calcDistance(center, p1);
-        center.setRadius(r);
-        
-        return center;
-    }
+		double r = calcDistance(center, p1);
+		center.setRadius(r);
 
-    public static double toDecimal(String coord) {
-        double decimal = 0;
-        int index = 0;
-        String temp = "";
+		return center;
+	}
 
-        if (coord.length() == 7) {
-            temp = coord.substring(0, 2);
-            index = 2;
-        } else if (coord.length() == 8) {
-            temp = coord.substring(0, 3);
-            index = 3;
-        }
+	public static double toDecimal(String coord) {
+		double decimal = 0;
+		int index = 0;
+		String temp = "";
 
-        decimal += Float.parseFloat(temp);
+		if (coord.length() == 7) {
+			temp = coord.substring(0, 2);
+			index = 2;
+		} else if (coord.length() == 8) {
+			temp = coord.substring(0, 3);
+			index = 3;
+		}else{
+			return 0.0;
+		}
 
-        temp = coord.substring(index, index + 2);
-        index += 2;
+		decimal += Float.parseFloat(temp);
 
-        decimal += Float.parseFloat(temp) / 60;
+		temp = coord.substring(index, index + 2);
+		index += 2;
 
-        temp = coord.substring(index, coord.length());
-        index += 2;
+		decimal += Float.parseFloat(temp) / 60;
 
-        decimal += (Float.parseFloat(temp) / 60000);
+		temp = coord.substring(index, coord.length());
+		index += 2;
 
-        return decimal;
-    }
+		decimal += (Float.parseFloat(temp) / 60000);
 
-    public static String toPartGPSCoord(double koord, GpsAxis axis) {
-        String partGPSCoord = "";
-        String temp;
+		return decimal;
+	}
 
-        if (axis == GpsAxis.LAT) {
-            temp = "" + (int) koord;
-            while (temp.length() < 2) {
-                temp = "0" + temp;
-            }
-        } else {
-            temp = "" + (int) koord;
-            while (temp.length() < 3) {
-                temp = "0" + temp;
-            }
-        }
+	public static String toPartGPSCoord(double koord, GpsAxis axis) {
+		String partGPSCoord = "";
+		String temp;
 
-        koord = koord - (int) koord;
-        koord *= 60;
+		if (axis == GpsAxis.LAT) {
+			temp = "" + (int) koord;
+			while (temp.length() < 2) {
+				temp = "0" + temp;
+			}
+		} else {
+			temp = "" + (int) koord;
+			while (temp.length() < 3) {
+				temp = "0" + temp;
+			}
+		}
 
-        partGPSCoord += temp;
+		koord = koord - (int) koord;
+		koord *= 60;
 
-        partGPSCoord += "" + (int) koord;
+		partGPSCoord += temp;
 
-        koord = koord - (int) koord;
-        koord *= 1000;
+		partGPSCoord += "" + (int) koord;
 
-        partGPSCoord += "" + (int) koord;
+		koord = koord - (int) koord;
+		koord *= 1000;
 
-        return partGPSCoord;
-    }
+		partGPSCoord += "" + (int) koord;
 
-    @Override
-    public String toString() {
-        return lat + "|" + lon + "||" + latDeg + "|" + lonDeg;
-    }
+		return partGPSCoord;
+	}
+
+	@Override
+	public String toString() {
+		return lat + "|" + lon + "||" + latDeg + "|" + lonDeg;
+	}
 }
